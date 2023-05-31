@@ -1,4 +1,6 @@
+import React, { useMemo } from "react";
 import styled from "styled-components";
+import useGenerateColor from "../hooks/useGenerateColor";
 
 interface SquareProps {
   index: number;
@@ -8,47 +10,22 @@ interface SquareProps {
 }
 
 const Square = ({ index, answerIndex, onClick, stage }: SquareProps) => {
-  const generateColor = (stage: number, index: number, answerIndex: number) => {
-    const baseHue = Math.floor((stage - 1) * 60) % 360;
-    const saturation = 200;
-    const lightness = 30;
-    const opacity = index === answerIndex ? 1 : 0.7;
-    return `hsla(${baseHue}, ${saturation}%, ${lightness}%, ${opacity})`;
-  };
+  const color = useGenerateColor(stage, index, answerIndex);
 
-  const isAnswer = index === answerIndex;
-  const baseOpacity = 0.7;
-  const opacity = baseOpacity + (stage - 1) * 0.1;
-
-  const randomColor = `rgba(0, 0, 255, ${opacity})`;
-  const color = generateColor(stage, index, answerIndex);
-  //event type with button
-  const handleClick = (event: any) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     onClick(index);
   };
 
-  return (
-    <Board
-      style={{
-        width: "50px",
-        height: "50px",
-        backgroundColor: color,
-        display: "inline-block",
-        margin: "5px",
-      }}
-      onClick={handleClick}></Board>
-  );
+  return <Section color={color} onClick={handleClick}></Section>;
 };
 
-const Board = styled.section`
-  width: 50px;
-  height: 50px;
-  background-color: color;
+const Section = styled.button<{ color: string }>`
+  width: 3rem;
+  height: 3rem;
+  background-color: ${(props) => props.color};
+  display: inline-block;
   margin: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 export default Square;
