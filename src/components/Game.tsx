@@ -29,30 +29,34 @@ const Game = () => {
     };
   }, []);
 
-  const resetGame = (square: number) => {
+  const initializeGame = (square: number) => {
     setRemainingTime(15);
     setAnswerIndex(square + 1);
   };
 
   const moveToNextStage = () => {
     setStage((prevStage) => prevStage + 1);
-    resetGame(square);
+    initializeGame(square);
+  };
+
+  const handleCorrectAnswer = () => {
+    const stageScore = Math.pow(stage, 3) * remainingTime;
+    setScore((prevScore) => prevScore + stageScore);
+    moveToNextStage();
+  };
+
+  const handleWrongAnswer = () => {
+    setRemainingTime((prevTime) => Math.max(prevTime - 3, 0));
   };
 
   const handleSquareClick = (index: number) => {
-    //정답인 경우
-    if (index === answerIndex) {
-      const stageScore = Math.pow(stage, 3) * remainingTime;
-      setScore((prevScore) => prevScore + stageScore);
-      moveToNextStage();
-    } //오답인 경우
-    else setRemainingTime((prevTime) => Math.max(prevTime - 3, 0));
+    index === answerIndex ? handleCorrectAnswer() : handleWrongAnswer();
   };
 
-  const restartGame = () => {
+  const startNewGame = () => {
     setStage(1);
     setScore(0);
-    resetGame(square);
+    initializeGame(square);
     setGameOver(false);
   };
 
@@ -84,7 +88,7 @@ const Game = () => {
         <p>최종 stage: {stage}</p>
         <p>누적 score: {score}</p>
       </GameDisplay>
-      <button onClick={restartGame}>새로운 게임시작</button>
+      <button onClick={startNewGame}>새로운 게임시작</button>
     </>
   );
 };
