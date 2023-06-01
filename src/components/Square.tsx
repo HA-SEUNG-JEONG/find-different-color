@@ -12,8 +12,7 @@ interface SquareProps {
 const Square = ({ index, answerIndex, onClick, stage }: SquareProps) => {
   const color = useGenerateColor(stage, index, answerIndex);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
+  const handleClick = () => {
     onClick(index);
   };
 
