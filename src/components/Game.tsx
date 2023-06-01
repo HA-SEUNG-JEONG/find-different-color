@@ -8,7 +8,7 @@ const Game = () => {
   const [score, setScore] = useState(0);
   const [remainingTime, setRemainingTime] = useState(15);
   const [answerIndex, setAnswerIndex] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
+  const [gameOver, setGameOver] = useState(true);
 
   const square = useRandomSquare(stage);
 
@@ -17,10 +17,12 @@ const Game = () => {
       setRemainingTime((prevTime) => prevTime - 1);
     }, 1000);
 
-    if (remainingTime <= 0) {
+    const handleGameOver = () => {
       clearInterval(timer);
       setGameOver(true);
-    }
+    };
+
+    if (remainingTime <= 0 && gameOver) handleGameOver();
 
     return () => {
       clearInterval(timer);
@@ -56,6 +58,8 @@ const Game = () => {
 
   const randomSquareNumber = Math.pow(Math.round((stage + 0.5) / 2) + 1, 2);
 
+  const squareData = { answerIndex, stage };
+
   return remainingTime > 0 ? (
     <div>
       <Title>Game</Title>
@@ -67,8 +71,7 @@ const Game = () => {
           <Square
             key={index}
             index={index}
-            answerIndex={answerIndex}
-            stage={stage}
+            squareData={squareData}
             onClick={handleSquareClick}
           />
         ))}

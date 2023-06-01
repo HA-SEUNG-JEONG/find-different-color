@@ -1,15 +1,16 @@
-import React, { useMemo } from "react";
 import styled from "styled-components";
 import useGenerateColor from "../hooks/useGenerateColor";
 
 interface SquareProps {
+  squareData: {
+    answerIndex: number;
+    stage: number;
+  };
   index: number;
-  answerIndex: number;
   onClick: (index: number) => void;
-  stage: number;
 }
-
-const Square = ({ index, answerIndex, onClick, stage }: SquareProps) => {
+const Square = ({ squareData, index, onClick }: SquareProps) => {
+  const { answerIndex, stage } = squareData;
   const color = useGenerateColor(stage, index, answerIndex);
 
   const handleClick = () => {
