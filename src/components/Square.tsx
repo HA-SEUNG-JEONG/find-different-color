@@ -2,10 +2,7 @@ import styled from "styled-components";
 import useGenerateColor from "../hooks/useGenerateColor";
 
 interface SquareProps {
-  squareData: {
-    answerIndex: number;
-    stage: number;
-  };
+  squareData: { answerIndex: number; stage: number };
   index: number;
   onClick: (index: number) => void;
 }
@@ -17,14 +14,15 @@ const Square = ({ squareData, index, onClick }: SquareProps) => {
     onClick(index);
   };
 
-  return <Section color={color} onClick={handleClick}></Section>;
+  return <SquareButton color={color} onClick={handleClick}></SquareButton>;
 };
 
-const Section = styled.button<{ color: string }>`
+const SquareButton = styled.button<{ color: string }>`
+  display: flex;
   width: 3rem;
   height: 3rem;
   background-color: ${(props) => props.color};
-  display: inline-block;
+  cursor: pointer;
 `;
 
 export default Square;
