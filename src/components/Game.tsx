@@ -2,10 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Square from "./Square";
 import useRandomSquare from "../hooks/useRandomSquare";
-import { gameData } from "../data/gameData";
+import { initialGameState } from "../data/initialGameState";
 
 const Game = () => {
-  const [state, setState] = useState(gameData);
+  const [state, setState] = useState(initialGameState);
+
   const square = useRandomSquare(state.stage);
 
   const updateState = useCallback((newState: Partial<typeof state>) => {
@@ -19,10 +20,11 @@ const Game = () => {
 
     const handleGameOver = () => {
       clearInterval(timer);
+      alert("게임 종료!");
       updateState({ isGameOver: true });
     };
 
-    if (state.remainingTime <= 0 && state.isGameOver) handleGameOver();
+    if (state.remainingTime <= 0 && !state.isGameOver) handleGameOver();
 
     return () => {
       clearInterval(timer);
