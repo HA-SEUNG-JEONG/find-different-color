@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Square from "./Square";
 import useRandomSquare from "../hooks/useRandomSquare";
@@ -8,9 +8,9 @@ const Game = () => {
   const [state, setState] = useState(gameData);
   const square = useRandomSquare(state.stage);
 
-  const updateState = (newState: Partial<typeof state>) => {
+  const updateState = useCallback((newState: Partial<typeof state>) => {
     setState((prevState) => ({ ...prevState, ...newState }));
-  };
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -27,7 +27,7 @@ const Game = () => {
     return () => {
       clearInterval(timer);
     };
-  }, [state.remainingTime]);
+  }, [state.remainingTime, updateState, state.isGameOver]);
 
   const initializeGame = (square: number) => {
     updateState({ remainingTime: 15, answerIndex: square + 1 });
