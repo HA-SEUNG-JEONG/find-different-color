@@ -25,7 +25,6 @@ const Section = styled.button<{ color: string }>`
   height: 3rem;
   background-color: ${(props) => props.color};
   display: inline-block;
-  margin: 5px;
 `;
 
 export default Square;
