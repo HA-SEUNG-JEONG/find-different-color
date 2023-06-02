@@ -9,10 +9,7 @@ const Game = () => {
   const square = useRandomSquare(state.stage);
 
   const updateState = (newState: Partial<typeof state>) => {
-    setState((prevState) => ({
-      ...prevState,
-      ...newState,
-    }));
+    setState((prevState) => ({ ...prevState, ...newState }));
   };
 
   useEffect(() => {
@@ -36,23 +33,23 @@ const Game = () => {
     updateState({ remainingTime: 15, answerIndex: square + 1 });
   };
 
-  const moveToNextStage = () => {
-    updateState({ stage: state.stage + 1 });
+  const moveToNextStage = (stage: number) => {
+    updateState({ stage: stage + 1 });
     initializeGame(square);
   };
 
-  const handleCorrectAnswer = () => {
+  const checkCorrectAnswer = () => {
     const stageScore = Math.pow(state.stage, 3) * state.remainingTime;
     updateState({ score: state.score + stageScore });
-    moveToNextStage();
+    moveToNextStage(state.stage);
   };
 
-  const handleWrongAnswer = () => {
+  const checkWrongAnswer = () => {
     updateState({ remainingTime: Math.max(state.remainingTime - 3, 0) });
   };
 
   const handleSquareClick = (index: number) => {
-    index === state.answerIndex ? handleCorrectAnswer() : handleWrongAnswer();
+    index === state.answerIndex ? checkCorrectAnswer() : checkWrongAnswer();
   };
 
   const startNewGame = () => {
@@ -65,10 +62,7 @@ const Game = () => {
     2
   );
 
-  const squareData = {
-    answerIndex: state.answerIndex,
-    stage: state.stage,
-  };
+  const squareData = { answerIndex: state.answerIndex, stage: state.stage };
 
   return state.remainingTime > 0 ? (
     <>
