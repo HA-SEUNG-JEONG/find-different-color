@@ -27,7 +27,7 @@ const Game = () => {
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [state.remainingTime]);
 
   const initializeGame = (square: number) => {
     updateState({ remainingTime: 15, answerIndex: square + 1 });
