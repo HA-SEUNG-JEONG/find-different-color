@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Square from "./Square";
 import useRandomSquare from "../hooks/useRandomSquare";
-import { gameData } from "../utils/gameData";
+import { gameData } from "../data/gameData";
 
 const Game = () => {
   const [state, setState] = useState(gameData);
