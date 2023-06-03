@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Square from "./Square";
 import useRandomSquare from "../hooks/useRandomSquare";
 import { initialGameState } from "../data/initialGameState";
+import CurrentScore from "./CurrentScore";
+import FinalScore from "./FinalScore";
 
 const Game = () => {
   const [state, setState] = useState(initialGameState);
@@ -20,16 +22,15 @@ const Game = () => {
 
     const handleGameOver = () => {
       clearInterval(timer);
-      alert("게임 종료!");
-      updateState({ isGameOver: true });
+      alert(`게임 종료 ${state.stage}단계, ${state.score}점`);
     };
 
-    if (state.remainingTime <= 0 && !state.isGameOver) handleGameOver();
+    if (state.remainingTime <= 0) handleGameOver();
 
     return () => {
       clearInterval(timer);
     };
-  }, [state.remainingTime, updateState, state.isGameOver]);
+  }, [state.remainingTime, updateState]);
 
   const initializeGame = (square: number) => {
     updateState({ remainingTime: 15, answerIndex: square + 1 });
@@ -55,7 +56,7 @@ const Game = () => {
   };
 
   const startNewGame = () => {
-    updateState({ stage: 1, score: 0, isGameOver: false });
+    updateState({ stage: 1, score: 0 });
     initializeGame(square);
   };
 
@@ -69,10 +70,8 @@ const Game = () => {
   return state.remainingTime > 0 ? (
     <>
       <Title>Game</Title>
-      <p>현재 Stage: {state.stage}</p>
-      <p>현재 Score: {state.score}</p>
-      <p>남은 시간: {state.remainingTime}초</p>
-      <Wrapper stage={state.stage}>
+      <CurrentScore state={state} />
+      <Wrapper square={square} stage={state.stage}>
         {[...Array(randomSquareNumber)].map((_, index) => (
           <Square
             key={index}
@@ -86,9 +85,7 @@ const Game = () => {
   ) : (
     <>
       <GameDisplay>
-        <p>게임 종료</p>
-        <p>최종 stage: {state.stage}</p>
-        <p>score: {state.score}</p>
+        <FinalScore state={state} />
       </GameDisplay>
       <button onClick={startNewGame}>새로운 게임시작</button>
     </>
@@ -107,13 +104,17 @@ const GameDisplay = styled.div`
   padding-left: 1.25rem;
 `;
 
-const Wrapper = styled.section<{ stage: number }>`
+const Wrapper = styled.section<{ stage: number; square: number }>`
   display: grid;
   grid-template-columns: repeat(
     ${(props) => Math.round((props.stage + 0.5) / 2) + 1},
-    3rem
+    10rem
   );
-  gap: 0.3rem;
+
+  width: ${(props) =>
+    (Math.round((props.stage + 0.5) / 2) + 1) * props.square}rem;
+  height: ${(props) =>
+    (Math.round((props.stage + 0.5) / 2) + 1) * props.square}rem;
 `;
 
 export default Game;

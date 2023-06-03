@@ -3,5 +3,4 @@ export const initialGameState = {
   score: 0,
   remainingTime: 15,
   answerIndex: 0,
-  isGameOver: false,
 };
