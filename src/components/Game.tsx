@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Square from "./Square";
-import useRandomSquare from "../hooks/useRandomSquare";
+import useCreateRandomSquare from "../hooks/useCreateRandomSquare";
 import { initialGameState } from "../data/initialGameState";
 import CurrentScore from "./CurrentScore";
 import FinalScore from "./FinalScore";
@@ -9,7 +9,7 @@ import FinalScore from "./FinalScore";
 const Game = () => {
   const [state, setState] = useState(initialGameState);
 
-  const square = useRandomSquare(state.stage);
+  const square = useCreateRandomSquare(state.stage);
 
   const updateState = useCallback((newState: Partial<typeof state>) => {
     setState((prevState) => ({ ...prevState, ...newState }));
@@ -108,13 +108,10 @@ const Wrapper = styled.section<{ stage: number; square: number }>`
   display: grid;
   grid-template-columns: repeat(
     ${(props) => Math.round((props.stage + 0.5) / 2) + 1},
-    10rem
+    5rem
   );
-
-  width: ${(props) =>
-    (Math.round((props.stage + 0.5) / 2) + 1) * props.square}rem;
-  height: ${(props) =>
-    (Math.round((props.stage + 0.5) / 2) + 1) * props.square}rem;
+  grid-auto-rows: repeat(${(props) => Math.round((props.stage + 0.5) / 2) + 1});
+  /* background-color: black; */
 `;
 
 export default Game;
