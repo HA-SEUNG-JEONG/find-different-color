@@ -11,13 +11,13 @@ const Game = () => {
 
   const square = useCreateRandomSquare(state.stage);
 
-  const updateState = useCallback((newState: Partial<typeof state>) => {
+  const updateGameState = useCallback((newState: Partial<typeof state>) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      updateState({ remainingTime: state.remainingTime - 1 });
+      updateGameState({ remainingTime: state.remainingTime - 1 });
     }, 1000);
 
     const handleGameOver = () => {
@@ -30,33 +30,33 @@ const Game = () => {
     return () => {
       clearInterval(timer);
     };
-  }, [state.remainingTime, updateState]);
+  }, [state.remainingTime, updateGameState]);
 
   const initializeGame = (square: number) => {
-    updateState({ remainingTime: 15, answerIndex: square + 1 });
+    updateGameState({ remainingTime: 15, answerIndex: square + 1 });
   };
 
   const moveToNextStage = (stage: number) => {
-    updateState({ stage: stage + 1 });
+    updateGameState({ stage: stage + 1 });
     initializeGame(square);
   };
 
-  const checkCorrectAnswer = () => {
+  const handleCorrectAnswer = () => {
     const stageScore = Math.pow(state.stage, 3) * state.remainingTime;
-    updateState({ score: state.score + stageScore });
+    updateGameState({ score: state.score + stageScore });
     moveToNextStage(state.stage);
   };
 
-  const checkWrongAnswer = () => {
-    updateState({ remainingTime: Math.max(state.remainingTime - 3, 0) });
+  const handleWrongAnswer = () => {
+    updateGameState({ remainingTime: Math.max(state.remainingTime - 3, 0) });
   };
 
   const handleSquareClick = (index: number) => {
-    index === state.answerIndex ? checkCorrectAnswer() : checkWrongAnswer();
+    index === state.answerIndex ? handleCorrectAnswer() : handleWrongAnswer();
   };
 
   const startNewGame = () => {
-    updateState({ stage: 1, score: 0 });
+    updateGameState({ stage: 1, score: 0 });
     initializeGame(square);
   };
 
@@ -111,7 +111,6 @@ const Wrapper = styled.section<{ stage: number; square: number }>`
     5rem
   );
   grid-auto-rows: repeat(${(props) => Math.round((props.stage + 0.5) / 2) + 1});
-  /* background-color: black; */
 `;
 
 export default Game;
