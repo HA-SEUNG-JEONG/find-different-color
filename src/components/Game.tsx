@@ -1,15 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+import { useCallback, useEffect, useState } from "react";
 import Square from "./Square";
 import useCreateRandomSquare from "../hooks/useCreateRandomSquare";
 import { initialGameState } from "../data/initialGameState";
-import CurrentScore from "./CurrentScore";
-import FinalScore from "./FinalScore";
+import CurrentGameInfo from "./CurrentGameInfo";
+import FinalGameInfo from "./FinalGameInfo";
 
 const Game = () => {
   const [state, setState] = useState(initialGameState);
 
-  const square = useCreateRandomSquare(state.stage);
+  const stage = state.stage;
+  const score = state.score;
+  const answerIndex = state.answerIndex;
+
+  const square = useCreateRandomSquare(stage);
 
   const updateGameState = useCallback((newState: Partial<typeof state>) => {
     setState((prevState) => ({ ...prevState, ...newState }));
@@ -22,7 +26,7 @@ const Game = () => {
 
     const handleGameOver = () => {
       clearInterval(timer);
-      alert(`게임 종료 ${state.stage}단계, ${state.score}점`);
+      alert(`게임 종료 ${stage}단계, ${score}점`);
     };
 
     if (state.remainingTime <= 0) handleGameOver();
@@ -42,9 +46,9 @@ const Game = () => {
   };
 
   const handleCorrectAnswer = () => {
-    const stageScore = Math.pow(state.stage, 3) * state.remainingTime;
-    updateGameState({ score: state.score + stageScore });
-    moveToNextStage(state.stage);
+    const stageScore = Math.pow(stage, 3) * state.remainingTime;
+    updateGameState({ score: score + stageScore });
+    moveToNextStage(stage);
   };
 
   const handleWrongAnswer = () => {
@@ -60,17 +64,14 @@ const Game = () => {
     initializeGame(square);
   };
 
-  const randomSquareNumber = Math.pow(
-    Math.round((state.stage + 0.5) / 2) + 1,
-    2
-  );
+  const randomSquareNumber = Math.pow(Math.round((stage + 0.5) / 2) + 1, 2);
 
-  const squareData = { answerIndex: state.answerIndex, stage: state.stage };
+  const squareData = { answerIndex, stage };
 
   return state.remainingTime > 0 ? (
     <>
       <Title>Game</Title>
-      <CurrentScore state={state} />
+      <CurrentGameInfo state={state} />
       <Wrapper square={square} stage={state.stage}>
         {[...Array(randomSquareNumber)].map((_, index) => (
           <Square
@@ -85,7 +86,7 @@ const Game = () => {
   ) : (
     <>
       <GameDisplay>
-        <FinalScore state={state} />
+        <FinalGameInfo state={state} />
       </GameDisplay>
       <button onClick={startNewGame}>새로운 게임시작</button>
     </>
