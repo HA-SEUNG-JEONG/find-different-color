@@ -12,6 +12,7 @@ const Game = () => {
   const stage = state.stage;
   const score = state.score;
   const answerIndex = state.answerIndex;
+  const remainingTime = state.remainingTime;
 
   const square = useCreateRandomSquare(stage);
 
@@ -21,7 +22,7 @@ const Game = () => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      updateGameState({ remainingTime: state.remainingTime - 1 });
+      updateGameState({ remainingTime: remainingTime - 1 });
     }, 1000);
 
     const handleGameOver = () => {
@@ -29,15 +30,16 @@ const Game = () => {
       alert(`게임 종료 ${stage}단계, ${score}점`);
     };
 
-    if (state.remainingTime <= 0) handleGameOver();
+    if (remainingTime <= 0) handleGameOver();
 
     return () => {
       clearInterval(timer);
     };
-  }, [state.remainingTime, updateGameState]);
+  }, [score, stage, remainingTime, updateGameState]);
 
   const initializeGame = (square: number) => {
-    updateGameState({ remainingTime: 15, answerIndex: square + 1 });
+    const randomIndex = Math.floor(Math.random() * square);
+    updateGameState({ remainingTime: 15, answerIndex: randomIndex });
   };
 
   const moveToNextStage = (stage: number) => {
@@ -46,13 +48,13 @@ const Game = () => {
   };
 
   const handleCorrectAnswer = () => {
-    const stageScore = Math.pow(stage, 3) * state.remainingTime;
+    const stageScore = Math.pow(stage, 3) * remainingTime;
     updateGameState({ score: score + stageScore });
     moveToNextStage(stage);
   };
 
   const handleWrongAnswer = () => {
-    updateGameState({ remainingTime: Math.max(state.remainingTime - 3, 0) });
+    updateGameState({ remainingTime: Math.max(remainingTime - 3, 0) });
   };
 
   const handleSquareClick = (index: number) => {
@@ -68,7 +70,7 @@ const Game = () => {
 
   const squareData = { answerIndex, stage };
 
-  return state.remainingTime > 0 ? (
+  return remainingTime > 0 ? (
     <>
       <Title>Game</Title>
       <CurrentGameInfo state={state} />
@@ -109,7 +111,7 @@ const Wrapper = styled.section<{ stage: number; square: number }>`
   display: grid;
   grid-template-columns: repeat(
     ${(props) => Math.round((props.stage + 0.5) / 2) + 1},
-    5rem
+    3rem
   );
   grid-auto-rows: repeat(${(props) => Math.round((props.stage + 0.5) / 2) + 1});
 `;
