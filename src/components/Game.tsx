@@ -9,12 +9,7 @@ import FinalGameInfo from "./FinalGameInfo";
 const Game = () => {
   const [state, setState] = useState(initialGameState);
 
-  const stage = state.stage;
-  const score = state.score;
-  const answerIndex = state.answerIndex;
-  const remainingTime = state.remainingTime;
-
-  const square = useCreateRandomSquare(stage);
+  const square = useCreateRandomSquare(state.stage);
 
   const updateGameState = useCallback((newState: Partial<typeof state>) => {
     setState((prevState) => ({ ...prevState, ...newState }));
@@ -22,20 +17,20 @@ const Game = () => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      updateGameState({ remainingTime: remainingTime - 1 });
+      updateGameState({ remainingTime: state.remainingTime - 1 });
     }, 1000);
 
     const handleGameOver = () => {
       clearInterval(timer);
-      alert(`게임 종료 ${stage}단계, ${score}점`);
+      alert(`게임 종료 ${state.stage}단계, ${state.score}점`);
     };
 
-    if (remainingTime <= 0) handleGameOver();
+    if (state.remainingTime <= 0) handleGameOver();
 
     return () => {
       clearInterval(timer);
     };
-  }, [score, stage, remainingTime, updateGameState]);
+  }, [state.score, state.stage, state.remainingTime, updateGameState]);
 
   const initializeGame = (square: number) => {
     const randomIndex = Math.floor(Math.random() * square);
@@ -48,13 +43,13 @@ const Game = () => {
   };
 
   const handleCorrectAnswer = () => {
-    const stageScore = Math.pow(stage, 3) * remainingTime;
-    updateGameState({ score: score + stageScore });
-    moveToNextStage(stage);
+    const stageScore = Math.pow(state.stage, 3) * state.remainingTime;
+    updateGameState({ score: state.score + stageScore });
+    moveToNextStage(state.stage);
   };
 
   const handleWrongAnswer = () => {
-    updateGameState({ remainingTime: Math.max(remainingTime - 3, 0) });
+    updateGameState({ remainingTime: Math.max(state.remainingTime - 3, 0) });
   };
 
   const handleSquareClick = (index: number) => {
@@ -66,11 +61,14 @@ const Game = () => {
     initializeGame(square);
   };
 
-  const randomSquareNumber = Math.pow(Math.round((stage + 0.5) / 2) + 1, 2);
+  const randomSquareNumber = Math.pow(
+    Math.round((state.stage + 0.5) / 2) + 1,
+    2
+  );
 
-  const squareData = { answerIndex, stage };
+  const squareData = { answerIndex: state.answerIndex, stage: state.stage };
 
-  return remainingTime > 0 ? (
+  return state.remainingTime > 0 ? (
     <>
       <Title>Game</Title>
       <CurrentGameInfo state={state} />
