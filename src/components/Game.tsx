@@ -97,7 +97,7 @@ const Game = () => {
       <GameDisplay>
         <FinalGameInfo state={state} />
       </GameDisplay>
-      <button onClick={startNewGame}>새로운 게임시작</button>
+      <Button onClick={startNewGame}>새로운 게임시작</Button>
     </>
   );
 };
@@ -121,6 +121,24 @@ const Wrapper = styled.section<GameProps>`
     3rem
   );
   grid-auto-rows: repeat(${(props) => Math.round((props.stage + 0.5) / 2) + 1});
+`;
+
+const Button = styled.button`
+  background-color: #e7ebef;
+  color: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  width: 150px;
+  height: 45px;
+  transition: 0.3s;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #3b82f6;
+    box-shadow: 0 0 0 5px #3b83f65f;
+    color: #fff;
+    cursor: pointer;
+  }
 `;
 
 export default Game;
