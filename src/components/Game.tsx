@@ -6,6 +6,13 @@ import { initialGameState } from "../data/initialGameState";
 import CurrentGameInfo from "./CurrentGameInfo";
 import FinalGameInfo from "./FinalGameInfo";
 
+import { toast } from "react-toastify";
+
+interface GameProps {
+  stage: number;
+  square: number;
+}
+
 const Game = () => {
   const [state, setState] = useState(initialGameState);
 
@@ -22,10 +29,12 @@ const Game = () => {
 
     const handleGameOver = () => {
       clearInterval(timer);
-      alert(`게임 종료 ${state.stage}단계, ${state.score}점`);
     };
 
-    if (state.remainingTime <= 0) handleGameOver();
+    if (state.remainingTime <= 0) {
+      handleGameOver();
+      toast.info(`게임 종료 ${state.stage}단계, ${state.score}점`);
+    }
 
     return () => {
       clearInterval(timer);
@@ -105,7 +114,7 @@ const GameDisplay = styled.div`
   padding-left: 1.25rem;
 `;
 
-const Wrapper = styled.section<{ stage: number; square: number }>`
+const Wrapper = styled.section<GameProps>`
   display: grid;
   grid-template-columns: repeat(
     ${(props) => Math.round((props.stage + 0.5) / 2) + 1},
