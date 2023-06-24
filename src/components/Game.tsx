@@ -33,7 +33,7 @@ const Game = () => {
       clearInterval(timer);
     };
 
-    if (state.remainingTime <= 0) {
+    if (remainingTime <= 0) {
       handleGameOver();
       toast.info(`게임 종료 ${stage}단계, ${score}점`);
     }
@@ -126,9 +126,9 @@ const Button = styled.button`
   background-color: #e7ebef;
   color: #3b82f6;
   border: none;
-  border-radius: 8px;
-  width: 150px;
-  height: 45px;
+  border-radius: 0.5rem;
+  width: 9rem;
+  height: 3rem;
   transition: 0.3s;
   font-weight: bold;
 
