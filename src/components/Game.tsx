@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import Square from "./Square";
 import { initialGameInfo } from "../data/initialGameInfo";
 import CurrentGameInfo from "./CurrentGameInfo";
 import FinalGameInfo from "./FinalGameInfo";
 
 import { toast } from "react-toastify";
+import { gameReducer } from "../gameReducerreducer";
 
 interface GameProps {
   stage: number;
@@ -13,7 +14,7 @@ interface GameProps {
 }
 
 const Game = () => {
-  const [state, setState] = useState(initialGameInfo);
+  const [state, dispatch] = useReducer(gameReducer, initialGameInfo);
 
   const { stage, score, answerIndex, remainingTime } = state;
 
@@ -26,7 +27,7 @@ const Game = () => {
   const square = getBoardData(stage);
 
   const updateGameState = useCallback((newState: Partial<typeof state>) => {
-    setState((prevState) => ({ ...prevState, ...newState }));
+    dispatch({ type: "UPDATE_GAME_STATE", payload: newState });
   }, []);
 
   useEffect(() => {
@@ -78,8 +79,6 @@ const Game = () => {
   };
 
   const randomSquareNumber = Math.pow(Math.round((stage + 0.5) / 2) + 1, 2);
-
-  // const squareData = { answerIndex, stage };
 
   return remainingTime > 0 ? (
     <>
