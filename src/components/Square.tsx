@@ -1,18 +1,24 @@
 import styled from "styled-components";
-import useGenerateColor from "../hooks/useGenerateColor";
 
 interface SquareProps {
-  squareData: { answerIndex: number; stage: number };
+  answerIndex: number;
+  stage: number;
   index: number;
   onClick: (index: number) => void;
 }
-const Square = ({ squareData, index, onClick }: SquareProps) => {
-  const { answerIndex, stage } = squareData;
-  const color = useGenerateColor(stage, index, answerIndex);
+const Square = ({ answerIndex, stage, index, onClick }: SquareProps) => {
+  const getColor = (stage: number, index: number, answerIndex: number) => {
+    const baseHue = Math.floor((stage - 1) * 60) % 360;
+    const lightness = 30 + Math.min(0.2, (stage - 1) * 0.02);
+    const colorDifference = Math.min(0.2, (stage - 1) * 0.002);
+    const opacity = index === answerIndex ? 0.9 : 0.7 + colorDifference;
 
-  const handleClick = () => {
-    onClick(index);
+    return `rgba(${baseHue}, 100, ${lightness}, ${opacity})`;
   };
+
+  const color = getColor(stage, index, answerIndex);
+
+  const handleClick = () => onClick(index);
 
   return <SquareButton color={color} onClick={handleClick}></SquareButton>;
 };

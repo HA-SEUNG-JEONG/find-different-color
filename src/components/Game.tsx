@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useCallback, useEffect, useState } from "react";
 import Square from "./Square";
-import useCreateRandomSquare from "../hooks/useCreateRandomSquare";
 import { initialGameInfo } from "../data/initialGameInfo";
 import CurrentGameInfo from "./CurrentGameInfo";
 import FinalGameInfo from "./FinalGameInfo";
@@ -18,7 +17,13 @@ const Game = () => {
 
   const { stage, score, answerIndex, remainingTime } = state;
 
-  const square = useCreateRandomSquare(stage);
+  const getBoardData = (stage: number) => {
+    const gridSize = Math.round((stage + 0.5) / 2) + 1;
+    const totalCells = Math.pow(gridSize, 2);
+    return Math.floor(Math.random() * totalCells);
+  };
+
+  const square = getBoardData(stage);
 
   const updateGameState = useCallback((newState: Partial<typeof state>) => {
     setState((prevState) => ({ ...prevState, ...newState }));
@@ -74,7 +79,7 @@ const Game = () => {
 
   const randomSquareNumber = Math.pow(Math.round((stage + 0.5) / 2) + 1, 2);
 
-  const squareData = { answerIndex, stage };
+  // const squareData = { answerIndex, stage };
 
   return remainingTime > 0 ? (
     <>
@@ -85,7 +90,8 @@ const Game = () => {
           <Square
             key={index}
             index={index}
-            squareData={squareData}
+            answerIndex={answerIndex}
+            stage={stage}
             onClick={handleSquareClick}
           />
         ))}
