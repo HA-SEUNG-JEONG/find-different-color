@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useCallback, useEffect, useState } from "react";
 import Square from "./Square";
 import useCreateRandomSquare from "../hooks/useCreateRandomSquare";
-import { initialGameState } from "../data/initialGameState";
+import { initialGameInfo } from "../data/initialGameInfo";
 import CurrentGameInfo from "./CurrentGameInfo";
 import FinalGameInfo from "./FinalGameInfo";
 
@@ -14,9 +14,11 @@ interface GameProps {
 }
 
 const Game = () => {
-  const [state, setState] = useState(initialGameState);
+  const [state, setState] = useState(initialGameInfo);
 
-  const square = useCreateRandomSquare(state.stage);
+  const { stage, score, answerIndex, remainingTime } = state;
+
+  const square = useCreateRandomSquare(stage);
 
   const updateGameState = useCallback((newState: Partial<typeof state>) => {
     setState((prevState) => ({ ...prevState, ...newState }));
@@ -24,7 +26,7 @@ const Game = () => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      updateGameState({ remainingTime: state.remainingTime - 1 });
+      updateGameState({ remainingTime: remainingTime - 1 });
     }, 1000);
 
     const handleGameOver = () => {
@@ -33,13 +35,13 @@ const Game = () => {
 
     if (state.remainingTime <= 0) {
       handleGameOver();
-      toast.info(`게임 종료 ${state.stage}단계, ${state.score}점`);
+      toast.info(`게임 종료 ${stage}단계, ${score}점`);
     }
 
     return () => {
       clearInterval(timer);
     };
-  }, [state.score, state.stage, state.remainingTime, updateGameState]);
+  }, [score, stage, remainingTime, updateGameState]);
 
   const initializeGame = (square: number) => {
     const randomIndex = Math.floor(Math.random() * square);
@@ -52,17 +54,17 @@ const Game = () => {
   };
 
   const handleCorrectAnswer = () => {
-    const stageScore = Math.pow(state.stage, 3) * state.remainingTime;
-    updateGameState({ score: state.score + stageScore });
-    moveToNextStage(state.stage);
+    const stageScore = Math.pow(stage, 3) * state.remainingTime;
+    updateGameState({ score: score + stageScore });
+    moveToNextStage(stage);
   };
 
   const handleWrongAnswer = () => {
-    updateGameState({ remainingTime: Math.max(state.remainingTime - 3, 0) });
+    updateGameState({ remainingTime: Math.max(remainingTime - 3, 0) });
   };
 
   const handleSquareClick = (index: number) => {
-    index === state.answerIndex ? handleCorrectAnswer() : handleWrongAnswer();
+    index === answerIndex ? handleCorrectAnswer() : handleWrongAnswer();
   };
 
   const startNewGame = () => {
@@ -70,18 +72,15 @@ const Game = () => {
     initializeGame(square);
   };
 
-  const randomSquareNumber = Math.pow(
-    Math.round((state.stage + 0.5) / 2) + 1,
-    2
-  );
+  const randomSquareNumber = Math.pow(Math.round((stage + 0.5) / 2) + 1, 2);
 
-  const squareData = { answerIndex: state.answerIndex, stage: state.stage };
+  const squareData = { answerIndex, stage };
 
-  return state.remainingTime > 0 ? (
+  return remainingTime > 0 ? (
     <>
       <Title>Game</Title>
       <CurrentGameInfo state={state} />
-      <Wrapper square={square} stage={state.stage}>
+      <Wrapper square={square} stage={stage}>
         {[...Array(randomSquareNumber)].map((_, index) => (
           <Square
             key={index}
