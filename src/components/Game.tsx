@@ -6,7 +6,7 @@ import CurrentGameInfo from "./CurrentGameInfo";
 import FinalGameInfo from "./FinalGameInfo";
 
 import { toast } from "react-toastify";
-import { gameReducer } from "../gameReducerreducer";
+import { gameReducer } from "../gameReducer";
 
 interface GameProps {
   stage: number;
